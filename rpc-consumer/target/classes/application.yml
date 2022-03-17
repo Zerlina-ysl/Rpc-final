@@ -1,0 +1,8 @@
+rpc:
+  center:
+    active: true
+    connectStr: 47.96.43.26:2181
+    sessionTimeoutMs: 50000
+    connectionTimeoutMs: 50000
+server:
+  port: 8081

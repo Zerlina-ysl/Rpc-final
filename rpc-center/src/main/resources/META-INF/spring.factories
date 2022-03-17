@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.center.rpc.RpcCenterConfiguration
+#配置信息符合时自动加载配置类
