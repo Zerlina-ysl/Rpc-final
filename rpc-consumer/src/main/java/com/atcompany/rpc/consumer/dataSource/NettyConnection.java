@@ -45,7 +45,7 @@ public class NettyConnection implements Connection{
 
     private OutBoundMsg<String,Void> outBoundMsg = new OutBoundMsg<String, Void>() {
         @Override
-        public Future<Void> sendMsg(String msg) throws IOException {
+        public Future<Void>  sendMsg(String msg) throws IOException {
             return pipeline.writeAndFlush(msg+"$");
         }
     };

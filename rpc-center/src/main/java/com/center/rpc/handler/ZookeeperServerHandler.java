@@ -43,9 +43,15 @@ public class ZookeeperServerHandler implements ServerHandler,ClientHandler{
         this.client = client;
     }
 
+    /**
+     * 发现服务：发现节点，并转化为ServiceInfo格式
+     * @param serverClass
+     * @return
+     */
     @Override
     public List<ServiceInfo> lookupServices(Class serverClass) {
         try {
+            //发现/lsyRpc/serverClass.getName()下的所有节点
             List<String> children = listChildren(buildServerPath(serverClass));
             //流式操作
             return children.stream().map(s->trans(s)).collect(Collectors.toList());
@@ -74,6 +80,7 @@ public class ZookeeperServerHandler implements ServerHandler,ClientHandler{
     public void addListener(Class serverClass, ServerListener serverListener) {
         ServerListenerFilter serverListenerFilter = new ServerListenerFilter(serverListener, serverClass);
         listeners.add(serverListenerFilter);
+        //是否添加过监听 因此进行线程安全处理
         if(!watcherAdded.get()&&watcherAdded.compareAndSet(false,true)){
             registerWatcher(buildServerPath(serverClass));
         }
@@ -123,18 +130,23 @@ public class ZookeeperServerHandler implements ServerHandler,ClientHandler{
 
     }
 
-
+    /**
+     * 拼接称为最终注册中心创建的结点名称 /lsyRpc/serverClass.getName()/lsyRpc/ip:port
+     * @param serverClass
+     * @param ip
+     * @param port
+     * @return
+     */
     private static String buildServerNodePath(Class serverClass, String ip, int port) {
 
         String path = buildServerPath(serverClass)+ZK_PATH_SPLIT+ip+":"+port;
         System.out.println("在zk中即将创建的节点路径为："+path);
-        //                       /lsyRpc/serverClass.getName()/lsyRpc/ip:port
         return  path;
 
     }
 
     /**
-     * 服务前缀
+     * 把类名注册到注册中心的格式前缀 类名全路径作为path路径
      * @param serverClass
      * @return
      */

@@ -27,7 +27,7 @@ public class TestController {
 
 
     @ResponseBody
-    @RequestMapping(value="/getUsersByName")
+    @RequestMapping(value="/getUser")
         public Object getUsersByName(int id){
 
         //使用代理对象
